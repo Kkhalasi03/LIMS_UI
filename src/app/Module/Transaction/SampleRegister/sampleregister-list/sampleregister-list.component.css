@@ -1,0 +1,152 @@
+.custom-header {
+  background-color: #f1f2f6; /* Change to any color you like */
+  color: black; /* Text color */
+  padding: 10px;
+  border-radius: 5px;
+}
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  /* Styling for rows */
+  .row {
+    display: flex;
+    margin-bottom: 15px;
+  }
+  
+  .col-25 {
+    flex: 25%;
+    padding: 5px;
+  }
+  
+  .col-75 {
+    flex: 75%;
+    padding: 5px;
+  }
+  
+  .popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+  }
+  
+  .popup-content {
+    background-color: white;
+    margin: 15% auto; /* Center the popup */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Width of the popup */
+    max-width: 600px; /* Max width of the popup */
+  }
+  
+  .popup .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .popup .close:hover,
+  .popup .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Container for the table */
+  .table-container {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+    
+    /* Table styling */
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: none; /* No border on the table */
+      border-bottom: 2px solid #ddd; /* Only bottom border */
+    }
+    
+    /* Table row styling */
+    .table tbody tr {
+      border-bottom: 1px solid #ddd; /* Bottom border for each row */
+    }
+    
+    /* Table heading row */
+    .table thead tr {
+      border-bottom: 0; /* No border below the table header */
+    }
+    
+    /* Table heading cell styling */
+    .table thead th {
+      background-color: transparent; /* No background color for header */
+      text-align: left; /* Left align text in table header */
+      font-weight: normal; /* Optional: Make header text less bold */
+      padding: 0.5rem 1rem; /* Add padding inside body cells for better readability */
+    }
+    
+    /* Table body cell styling */
+    .table tbody td {
+      text-align: left; /* Center align text in the body */
+      padding: 0.15rem 1rem; /* Add padding inside body cells for better readability */
+    }
+    
+    /* Button styling */
+    .action-btn {
+      margin: 0 2px;
+    }
+    
+    /* Button styling for active state */
+    .btn-active {
+      color: #fff;
+      background-color: #28a745;
+      border-color: #28a745;
+      padding: 3px 8px;
+      border-radius: 15px;
+    }
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .popup-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .popup-content button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .popup-content button:hover {
+      background-color: #0056b3;
+    }
+    

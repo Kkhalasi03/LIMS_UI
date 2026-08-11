@@ -1,0 +1,112 @@
+<div class="popup" *ngIf="isFormVisible">
+  <div class="popup-content">
+    <span class="close" (click)="closeForm()">&times;</span>
+    <h2>{{ isEditMode ? 'Edit State' : 'Add State' }}</h2>
+    <hr />
+    <form [formGroup]="stateForm" (ngSubmit)="isEditMode ? onSubmit() : onAddsubmit()">
+      
+      <!-- State ID (Readonly in Edit Mode) -->
+      <div class="row mb-3">
+        <label for="stateId" class="col-25 col-form-label">State ID</label>
+        <div class="col-75">
+          <input
+            formControlName="StateId"
+            type="number"
+            id="stateId"
+            class="form-control"
+            placeholder="State ID"
+            [readonly]="isEditMode"
+          />
+        </div>
+      </div>
+
+      <!-- State Code -->
+      <div class="row mb-3">
+        <label for="stateCode" class="col-25 col-form-label">State Code</label>
+        <div class="col-75">
+          <input
+            formControlName="StateCode"
+            type="text"
+            id="stateCode"
+            class="form-control"
+            placeholder="State Code"
+            required
+            pattern="^(?!\s*$)[A-Za-z]+(?:[ -][A-Za-z]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="stateForm.get('StateCode')?.invalid && stateForm.get('StateCode')?.touched" class="text-danger">
+        <div *ngIf="stateForm.get('StateCode')?.hasError('required')">State Code is required.</div>
+        <div *ngIf="stateForm.get('StateCode')?.hasError('pattern')">State Code must contain only letters and spaces in between.</div>
+      </div>
+
+      <!-- State Name -->
+      <div class="row mb-3">
+        <label for="stateName" class="col-25 col-form-label">State Name</label>
+        <div class="col-75">
+          <input
+            formControlName="StateName"
+            type="text"
+            id="stateName"
+            class="form-control"
+            placeholder="State Name"
+            required
+            pattern="^(?!\s*$)[A-Za-z]+(?:[ -][A-Za-z]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="stateForm.get('StateName')?.invalid && stateForm.get('StateName')?.touched" class="text-danger">
+        <div *ngIf="stateForm.get('StateName')?.hasError('required')">State Name is required.</div>
+        <div *ngIf="stateForm.get('StateName')?.hasError('pattern')">State Name must contain only letters and spaces in between.</div>
+      </div>
+
+      <!-- Country -->
+      <div class="row mb-3">
+        <label for="countryId" class="col-25 col-form-label">Country</label>
+        <div class="col-75">
+          <select
+            formControlName="CountryId"
+            class="form-control"
+            required
+          >
+            <option value="" disabled>Select a Country</option>
+            <option *ngFor="let country of countries" [value]="country.CountryId">
+              {{ country.CountryName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div *ngIf="stateForm.get('CountryId')?.invalid && stateForm.get('CountryId')?.touched" class="text-danger">
+        <div *ngIf="stateForm.get('CountryId')?.hasError('required')">Country is required.</div>
+      </div>
+
+      <!-- Submit & Close Buttons -->
+      <div class="row">
+        <div class="col-12 d-flex justify-content-between gap-4">
+          <button
+            type="submit"
+            class="btn btn-primary btn-md"
+            [disabled]="stateForm.invalid"
+          >
+            <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning btn-md"
+            (click)="closeForm()"
+          >
+            <i class="fa fa-close"></i> Close
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Popup Modal (Success/Error) -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>

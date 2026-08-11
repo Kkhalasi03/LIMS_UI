@@ -1,0 +1,331 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Modal -->
+<div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="isFormVisible">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Edit Sample Register' : 'Add Sample Register' }}</h5>
+        <button type="button" class="close btn btn-danger" (click)="closeForm()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="sampleRegisterForm" (ngSubmit)="isEditMode ? onSubmit() : onAddSubmit()">
+          <div class="row">
+            <!-- Left Side - Form Fields (Two fields per row) -->
+            <div class="col-md-8 border-end">
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="form-label">Sample Register ID</label>
+                  <input formControlName="SampleRegisterId" type="text" class="form-control" readonly="true" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Date</label>
+                  <input formControlName="CreatedOn" type="date" class="form-control"  [ngModel]="todayDate" readonly />
+                </div>
+              </div>
+              
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="form-label">Branch</label>
+                  <select formControlName="BranchId" class="form-control" required>
+                    <option value="" disabled selected>Select Branch</option>
+                    <option *ngFor="let branch of branches" [value]="branch.BranchId">{{ branch.BranchName }}</option>
+                  </select>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('BranchId')?.invalid && sampleRegisterForm.get('BranchId')?.touched">
+                    Branch selection is required.
+                  </small>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">B2B</label>
+                  <div class="d-flex align-items-center">
+                    <div class="form-check form-switch me-2">
+                      <input class="form-check-input" type="checkbox" [(ngModel)]="isB2B" (change)="toggleB2B()" required />  
+                    </div>
+                    <select formControlName="B2BId" class="form-control">
+                      <option *ngFor="let b2b of b2bOptions" [value]="b2b.B2BId">{{ b2b.B2BName }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="form-label">Mobile No</label>
+                  <input formControlName="MobileNo" type="text" class="form-control" required pattern="^\d{10}$" />
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('MobileNo')?.hasError('required')">Mobile No is required.</small>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('MobileNo')?.hasError('pattern')">Mobile No must be 10 digits.</small>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Title</label>
+                  <select formControlName="Title" class="form-control" required>
+                    <option value="" disabled selected>Select Title</option>
+                    <option *ngFor="let title of ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof']" [value]="title">{{ title }}</option>
+                  </select>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('Title')?.invalid && sampleRegisterForm.get('Title')?.touched">
+                    Title selection is required.
+                  </small>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="form-label">First Name</label>
+                  <input formControlName="FirstName" type="text" class="form-control" required pattern="^[A-Za-z]+( [A-Za-z]+)*$" />
+                  <div *ngIf="sampleRegisterForm.get('FirstName')?.invalid && sampleRegisterForm.get('FirstName')?.touched">
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('FirstName')?.hasError('required')">
+                      First Name is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('FirstName')?.hasError('pattern')">
+                      Only letters allowed. It should not be empty or contain only spaces.
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Middle Name</label>
+                  <input formControlName="MiddleName" type="text" class="form-control" required pattern="^[A-Za-z]+( [A-Za-z]+)*$" />
+                  <div *ngIf="sampleRegisterForm.get('MiddleName')?.invalid && sampleRegisterForm.get('MiddleName')?.touched">
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('MiddleName')?.hasError('required')">
+                      Middle Name is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('MiddleName')?.hasError('pattern')">
+                      Only letters allowed. It should not be empty or contain only spaces.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="form-label">Last Name</label>
+                  <input formControlName="LastName" type="text" class="form-control" required pattern="^(?!\s*$)[A-Za-z\s]+$"/>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('LastName')?.hasError('required')">
+                    Last Name is required.
+                  </small>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('LastName')?.hasError('pattern')">
+                    Only letters allowed. It should not be empty or contain only spaces.
+                  </small>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Date of Birth (DOB)</label>
+                  <input formControlName="DOB" type="date" class="form-control" max="{{ todayDate }}" (change)="calculateAge()" required />                  <small class="text-danger" *ngIf="sampleRegisterForm.get('DOB')?.invalid && sampleRegisterForm.get('DOB')?.touched">
+                    Date of Birth is required.
+                  </small>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="form-label">Age</label>
+                  <input formControlName="Age" type="number" class="form-control" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Gender</label>
+                  <select formControlName="Gender" class="form-control" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option *ngFor="let gender of ['Male', 'Female', 'Other']" [value]="gender">{{ gender }}</option>
+                  </select>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('Gender')?.invalid && sampleRegisterForm.get('Gender')?.touched">
+                    Gender selection is required.
+                  </small>
+                </div>
+              </div>
+              
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="form-label">Email ID</label>
+                  <input formControlName="EmailId" type="email" class="form-control" required pattern="^[^\s]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('EmailId')?.hasError('required')">Email is required.</small>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('EmailId')?.hasError('pattern')">Please enter a valid email address.
+                  </small>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">City</label>
+                  <select formControlName="CityId" class="form-control" required>
+                    <option value="" disabled selected>Select City</option>
+                    <option *ngFor="let city of cities" [value]="city.CityId">{{ city.CityName }}</option>
+                  </select>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('CityId')?.invalid && sampleRegisterForm.get('CityId')?.touched">
+                    City selection is required.
+                  </small>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="form-label">Area</label>
+                  <select formControlName="AreaId" class="form-control" required>
+                    <option value="" disabled selected>Select Area</option>
+                    <option *ngFor="let area of areas" [value]="area.AreaId">{{ area.AreaName }}</option>
+                  </select>
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('AreaId')?.invalid && sampleRegisterForm.get('AreaId')?.touched">
+                    Area selection is required.
+                  </small>
+                </div>
+            
+                <!-- Address -->
+                <div class="col-md-6">
+                  <label class="form-label">Address</label>
+                  <textarea formControlName="Address" class="form-control" rows="2" required pattern="^(?!\s*$)[A-Za-z0-9\s,.#\-]+$"></textarea>
+                  <div *ngIf="sampleRegisterForm.get('Address')?.invalid && sampleRegisterForm.get('Address')?.touched">
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('Address')?.hasError('required')">
+                      Address is required.
+                    </small>                    
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('Address')?.hasError('pattern')">
+                      Address cannot contain only spaces.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side - Service Section (Unchanged) -->
+            <div class="col-md-4">
+              <label class="form-label">Service</label>
+              <div class="d-flex">
+                <select formControlName="ServiceId" class="form-control me-2" multiple required>
+                  <option *ngFor="let service of services" [value]="service.ServiceId" [selected]="selectedServiceIds.includes(service.ServiceId)">
+                    {{ service.ServiceName }}
+                  </option>
+                </select>
+                
+                <div *ngIf="sampleRegisterForm.get('ServiceId')?.invalid && sampleRegisterForm.get('ServiceId')?.touched">
+                  <small class="text-danger">Service selection is required.</small>
+                </div>
+
+                <button type="button" class="btn btn-success" (click)="addServiceToList()">
+                  <i class="fa fa-plus"></i>
+                </button>
+              </div>
+
+              <!-- Scrollable Service Table -->
+              <div class="table-responsive mt-3 service-container">
+                <table class="table table-bordered">
+                  <thead class="table">
+                    <tr>
+                      <th>#</th>
+                      <th>Service Code</th>
+                      <th>Service Name</th>
+                      <th>Amount</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of selectedServiceDetails; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ item.ServiceCode }}</td>
+                      <td>{{ item.ServiceName }}</td>
+                      <td>{{ isB2B ? item.B2BAmount : item.B2CAmount }}</td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="removeService(i,item.ServiceId)">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                      <td colspan="2"><strong>{{ totalAmount }}</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="form-group">
+                <label for="payment">Payment Method</label>
+                <select class="form-control" id="payment" formControlName="PaymentModeId" (change)="onPaymentChange()" required>
+                  <option value="" disabled selected>Select a Payment Method</option>
+                  <option *ngFor="let payment of paymentOptions" [value]="payment.PaymentModeId">{{payment.PaymentModeName }}</option>
+                </select>
+                <div *ngIf="sampleRegisterForm.get('PaymentModeId')?.invalid && sampleRegisterForm.get('PaymentModeId')?.touched">
+                  <small class="text-danger" *ngIf="sampleRegisterForm.get('PaymentModeId')?.hasError('required')">
+                    Payment Id is required.
+                  </small>
+                </div>
+              </div>
+              <!-- Amount Field (Always visible) -->
+              <div class="row mt-2" *ngIf="showAmountField">
+                <div class="col-md-6">
+                  <!-- <label class="form-label">Amount</label> -->
+                  <input formControlName="AmountPaid" placeholder="Amount" type="number" class="form-control" required />
+                  <div *ngIf="sampleRegisterForm.get('AmountPaid')?.invalid && sampleRegisterForm.get('AmountPaid')?.touched">
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('AmountPaid')?.hasError('required')">
+                      Amount Paid Id is required.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <!-- Cheque Fields -->
+              <div class="row mt-2" *ngIf="showChequeFields">
+                <div class="col-md-5">
+                  <!-- <label class="form-label">Cheque No</label> -->
+                  <input formControlName="ChequeNo" placeholder="Cheque No" type="text" class="form-control" pattern="^[A-Za-z0-9]+$" required />
+                  <div *ngIf="sampleRegisterForm.get('ChequeNo')?.invalid && sampleRegisterForm.get('ChequeNo')?.touched">
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('ChequeNo')?.hasError('required')">
+                      Cheque No is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('ChequeNo')?.hasError('pattern')">
+                      Cheque No must contain only letters and digits.
+                    </small>
+                  </div>    
+                </div>
+                <div class="col-md-5">
+                  <!-- <label class="form-label">Date of Transaction</label> -->
+                  <input formControlName="DateOfTransaction" placeholder="Date of Transaction" type="date" class="form-control" required/>
+                </div>
+              </div>
+              <!-- Card Fields -->
+              <div class="row mt-2" *ngIf="showCardFields">
+                <div class="col-md-5">
+                  <!-- <label class="form-label">Card No</label> -->
+                  <input formControlName="CardNo" placeholder="Card No" type="text" class="form-control" pattern="^[A-Za-z0-9]+$" required />
+                  <div *ngIf="sampleRegisterForm.get('CardNo')?.invalid && sampleRegisterForm.get('CardNo')?.touched">
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('CardNo')?.hasError('required')">
+                      Card No is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('CardNo')?.hasError('pattern')">
+                      Card No must contain only letters and digits.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <!-- Transaction No Fields (For NEFT & RTGS) -->
+              <div class="row mt-2" *ngIf="showTransactionNoField">
+                <div class="col-md-6">
+                  <!-- <label class="form-label">Transaction No</label> -->
+                  <input formControlName="TransactionNo" placeholder="Transaction No" type="text" class="form-control" pattern="^[A-Za-z0-9]+$" required/>
+                  <div *ngIf="sampleRegisterForm.get('TransactionNo')?.invalid && sampleRegisterForm.get('TransactionNo')?.touched">
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('TransactionNo')?.hasError('required')">
+                      Transaction No is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleRegisterForm.get('TransactionNo')?.hasError('pattern')">
+                      Transaction No must contain only letters and digits.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" [disabled]="sampleRegisterForm.invalid">
+              <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="closeForm()">
+              <i class="fa fa-close"></i> Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-backdrop fade show" *ngIf="isFormVisible"></div>
+<!-- Popup Modal (Success/Error) -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>
+
+

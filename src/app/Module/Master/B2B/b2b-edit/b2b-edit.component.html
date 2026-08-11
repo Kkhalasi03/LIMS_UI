@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- B2B Form Modal (Add/Edit) -->
+<div class="popup" *ngIf="isFormVisible">
+  <div class="popup-content">
+    <span class="close" (click)="closeForm()">&times;</span>
+    <h2>{{ isEditMode ? 'Edit B2B' : 'Add B2B' }}</h2>
+    <hr />
+    <form [formGroup]="b2bForm" (ngSubmit)="isEditMode ? onSubmit() : onAddSubmit()">
+      
+      <!-- B2B ID (Readonly in Edit Mode) -->
+      <div class="row mb-3">
+        <label for="b2bId" class="col-25 col-form-label">B2B ID</label>
+        <div class="col-75">
+          <input
+            formControlName="B2BId"
+            type="number"
+            id="b2bId"
+            class="form-control"
+            placeholder="B2B ID"
+            [readonly]="isEditMode"
+          />
+        </div>
+      </div>
+      
+      <!-- B2B Code -->
+      <div class="row mb-3">
+        <label for="b2bCode" class="col-25 col-form-label">B2B Code</label>
+        <div class="col-75">
+          <input
+            formControlName="B2BCode"
+            type="text"
+            id="b2bCode"
+            class="form-control"
+            placeholder="B2B Code"
+            required
+            pattern="^(?!\s*$)[A-Za-z0-9]+(?:[ -][A-Za-z0-9]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="b2bForm.get('B2BCode')?.invalid && b2bForm.get('B2BCode')?.touched" class="text-danger">
+        <div *ngIf="b2bForm.get('B2BCode')?.hasError('required')">B2B Code is required.</div>
+        <div *ngIf="b2bForm.get('B2BCode')?.hasError('pattern')">B2B Code must contain only letters, numbers, and spaces in between.</div>
+      </div>
+  
+      <!-- B2B Name -->
+      <div class="row mb-3">
+        <label for="b2bName" class="col-25 col-form-label">B2B Name</label>
+        <div class="col-75">
+          <input
+            formControlName="B2BName"
+            type="text"
+            id="b2bName"
+            class="form-control"
+            placeholder="B2B Name"
+            required
+            pattern="^(?!\s*$)[A-Za-z]+(?:[ -][A-Za-z]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="b2bForm.get('B2BName')?.invalid && b2bForm.get('B2BName')?.touched" class="text-danger">
+        <div *ngIf="b2bForm.get('B2BName')?.hasError('required')">B2B Name is required.</div>
+        <div *ngIf="b2bForm.get('B2BName')?.hasError('pattern')">B2B Name must contain only letters and spaces in between.</div>
+      </div>
+
+      <!-- Submit & Close Buttons -->
+      <div class="row">
+        <div class="col-12 d-flex justify-content-between gap-4">
+          <button
+            type="submit"
+            class="btn btn-primary btn-md"
+            [disabled]="b2bForm.invalid"
+          >
+            <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning btn-md"
+            (click)="closeForm()"
+          >
+            <i class="fa fa-close"></i> Close
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Popup Modal (Success/Error) -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>

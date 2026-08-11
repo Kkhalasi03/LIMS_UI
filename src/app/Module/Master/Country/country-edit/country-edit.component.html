@@ -1,0 +1,79 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Country Form Modal (Add/Edit) -->
+<div class="popup" *ngIf="isFormVisible">
+  <div class="popup-content">
+    <span class="close" (click)="closeForm()">&times;</span>
+    <h2>{{ isEditMode ? 'Edit Country' : 'Add Country' }}</h2>
+    <hr />
+    <form [formGroup]="countryForm" (ngSubmit)="isEditMode ? onSubmit() : onAddsubmit()">
+      
+      <!-- Country ID (Readonly in Edit Mode) -->
+      <div class="row mb-3">
+        <label for="countryId" class="col-25 col-form-label">Country ID</label>
+        <div class="col-75">
+          <input
+            formControlName="CountryId"
+            type="number"
+            id="countryId"
+            class="form-control"
+            placeholder="Country ID"
+            [readonly]="isEditMode"
+          />
+        </div>
+      </div>
+      
+      <!-- Country Name -->
+      <div class="row mb-3">
+        <label for="countryName" class="col-25 col-form-label">Country Name</label>
+        <div class="col-75">
+          <input
+            formControlName="CountryName"
+            type="text"
+            id="countryName"
+            class="form-control"
+            placeholder="Country Name"
+            required
+            pattern="^(?!\s*$)[A-Za-z]+(?:[ -][A-Za-z]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="countryForm.get('CountryName')?.invalid && countryForm.get('CountryName')?.touched" class="text-danger">
+        <div *ngIf="countryForm.get('CountryName')?.hasError('required')">Country Name is required.</div>
+        <div *ngIf="countryForm.get('CountryName')?.hasError('pattern')">Country Name must contain only letters and spaces in between.</div>
+      </div>
+  
+      <!-- Submit & Close Buttons -->
+      <div class="row">
+        <div class="col-12 d-flex justify-content-between gap-4">
+          <button
+            type="submit"
+            class="btn btn-primary btn-md"
+            [disabled]="countryForm.invalid"
+          >
+            <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning btn-md"
+            (click)="closeForm()"
+          >
+            <i class="fa fa-close"></i> Close
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Popup Modal (Success/Error) -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+<!-- Bootstrap & FontAwesome -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- jQuery & Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Full Page Container -->
+<div class="container-fluid" style="background: #fff; height: 100vh;">
+  <div class="row justify-content-center align-items-center" style="height: 100%;">
+    <div class="col-md-8 col-xl-5">
+      <div class="card shadow-lg" style="border-radius: 15px; border: none;">
+        <div class="card-body p-5" style="background: linear-gradient(to bottom, #e3fffd, #d9e7ff); border-radius: 15px;">
+          
+          <!-- Login Form -->
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Header -->
+            <h1 class="text-center text-info mb-4" style="font-size: 32px;">Login Form</h1>
+            <p class="text-center text-muted mb-4" style="font-size: 16px;">
+              Please log in to your account
+            </p>
+
+            <!-- User ID Field -->
+            <div class="form-group">
+              <input type="text" class="form-control" id="uid" name="userName" formControlName="UserName" 
+                     placeholder="User Name" required style="font-size: 16px; height: 45px; padding: 10px;" 
+                     pattern="^(?!\s*$)(?=.*[A-Za-z])[A-Za-z0-9!@#$%^&*()_+={}\[\]:;,.<>?/-]+$"/>
+              <div *ngIf="loginForm.get('UserName')?.invalid && loginForm.get('UserName')?.touched">
+                <small class="text-danger" *ngIf="loginForm.get('UserName')?.hasError('required')">
+                  User Name is required.
+                </small>
+                <small class="text-danger" *ngIf="loginForm.get('UserName')?.hasError('pattern')">
+                  User Name must contain at least one letter and cannot contain only digits, special characters, or whitespace.
+                </small>
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+              <input type="password" class="form-control" id="upwd" formControlName="Password" name="password" 
+                     placeholder="Password" required style="font-size: 16px; height: 45px; padding: 10px;" 
+                     pattern="^(?!\s*$)[A-Za-z0-9!@#$%^&*()_+={}\[\]:;,.<>?/-]+$"/>
+              <div *ngIf="loginForm.get('Password')?.invalid && loginForm.get('Password')?.touched">
+                <small class="text-danger" *ngIf="loginForm.get('Password')?.hasError('required')">
+                  Password is required.
+                </small>
+                <small class="text-danger" *ngIf="loginForm.get('Password')?.hasError('pattern')">
+                  Password can contain letters, numbers, and special characters, but cannot contain only whitespace.
+                </small>
+              </div>
+            </div>
+
+            <!-- Error Message Below Password Field -->
+            <!-- <div *ngIf="errorMessage" class="alert alert-danger text-center"> -->
+            <div *ngIf="errorMessage" class="text-danger text-center mt-2">
+              {{ errorMessage }}
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="form-group d-flex justify-content-between">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe" formControlName="rememberMe" />
+                <label class="form-check-label" for="rememberMe" style="font-size: 14px;">Remember Me</label>
+              </div>
+              <a routerLink="/forgot-password" style="font-size: 14px; color: #007bff;">Forgot Password?</a>
+            </div>
+
+            <!-- Buttons -->
+            <div class="row">
+              <div class="col-sm-6">
+                <button type="submit" class="btn btn-primary btn-block" 
+                        style="border-radius: 8px; font-size: 16px; padding: 10px;">
+                  Submit
+                </button>
+              </div>
+              <div class="col-sm-6 d-flex justify-content-end">
+                <button type="button" class="btn btn-danger btn-block" 
+                        style="border-radius: 8px; font-size: 16px; padding: 10px;" 
+                        (click)="onClear()">
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Sign Up/Register Link (Optional) -->
+            <!-- 
+            <div class="text-center mt-3">
+              <a routerLink="/register/register-list" style="font-size: 14px; color: #007bff;">Sign Up/Register</a>
+            </div>
+            -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

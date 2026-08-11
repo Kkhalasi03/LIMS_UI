@@ -1,0 +1,190 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Backdrop -->
+<div class="custom-modal-backdrop" *ngIf="isFormVisible"></div>
+<!-- Modal -->
+<div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="isFormVisible">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Edit User' : 'User Registration' }}</h5>
+        <button type="button" class="close" (click)="closeForm()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs">
+          <!-- General Tab (Always Visible) -->
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'General'" (click)="activeTab = 'General'">General</a>
+          </li>
+        
+          <!-- Menu Rights Tab (Only Visible in Edit Mode) -->
+          <li class="nav-item" *ngIf="isEditMode">
+            <a class="nav-link" [class.active]="activeTab === 'menuRight'" 
+               (click)="fetchUserMenuRights(); activeTab = 'menuRight'">
+              Menu Rights
+            </a>
+          </li>
+        </ul>
+        <!-- <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'General'" (click)="activeTab = 'General'">General</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'menuRight'" 
+               (click)="fetchUserMenuRights(); activeTab = 'menuRight'">
+              Menu Rights
+            </a>
+          </li>
+        </ul> -->
+
+        <!-- Tab Content -->
+        <div class="tab-content mt-3">
+
+          <!-- General Tab -->
+          <div *ngIf="activeTab === 'General'">
+            <form [formGroup]="registrationForm">
+
+              <!-- User ID (disabled) -->
+              <div class="form-group">
+                <input type="text" formControlName="UserId" class="form-control form-control-sm" placeholder="User ID" readonly />
+              </div>
+
+              <!-- Full Name -->
+              <div class="form-group">
+                <input type="text" formControlName="FullName" class="form-control form-control-sm" placeholder="Full Name" required pattern="^[A-Za-z\s]+$" />
+                <small *ngIf="registrationForm.get('FullName')?.invalid && registrationForm.get('FullName')?.touched" class="text-danger">
+                  Full Name is required and should contain only letters and spaces.
+                </small>
+              </div>
+
+              <!-- User Name -->
+              <div class="form-group">
+                <input type="text" formControlName="UserName" class="form-control form-control-sm" placeholder="User Name" required />
+              </div>
+
+              <!-- Birth Date -->
+              <div class="form-group">
+                <input type="date" formControlName="BirthDay" class="form-control form-control-sm" required />
+              </div>
+
+              <!-- Gender -->
+              <div class="form-group">
+                <h6 class="text-muted">Gender:</h6>
+                <div class="form-check form-check-inline" *ngFor="let gender of ['Female', 'Male', 'Other']">
+                  <input class="form-check-input" type="radio" formControlName="Gender" [value]="gender" [id]="gender">
+                  <label class="form-check-label" [for]="gender">{{ gender }}</label>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="form-group">
+                <input type="email" formControlName="EmailId" class="form-control form-control-sm" placeholder="Email Address" required />
+              </div>
+
+              <!-- Mobile No -->
+              <div class="form-group">
+                <input type="tel" formControlName="MobileNo" class="form-control form-control-sm" placeholder="Mobile Number" required pattern="^[0-9]{10,15}$" />
+              </div>
+
+              <!-- Password -->
+              <!-- <div class="form-group">
+                <input type="password" formControlName="Password" class="form-control form-control-sm" placeholder="Password" required />
+              </div> -->
+
+              <!-- Confirm Password -->
+              <!-- <div class="form-group">
+                <input type="password" formControlName="ConfirmPassword" class="form-control form-control-sm" placeholder="Confirm Password" required />
+                <small *ngIf="registrationForm.get('Password')?.value !== registrationForm.get('ConfirmPassword')?.value && registrationForm.get('ConfirmPassword')?.touched" class="text-danger">
+                  Passwords do not match.
+                </small>
+              </div> -->
+
+              <!-- User Type -->
+              <div class="form-group">
+                <select formControlName="UserType" class="form-control form-control-sm" required>
+                  <option value="" disabled>Select User Type</option>
+                  <option *ngFor="let type of ['Admin','Doctor', 'Technician', 'Pathologist', 'Receptionist']" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+
+              <!-- Signature Upload -->
+              <div class="form-group">
+                <label for="signature">Upload Signature</label>
+                <input type="file" id="signature" (change)="onFileSelected($event)" accept="image/*" class="form-control-file" />
+              </div>
+
+            </form>
+
+            <!-- Update General Button -->
+            <div class="text-right">
+              <button type="button" class="btn btn-primary"
+                [disabled]="!registrationForm.valid"
+                (click)="isEditMode ? onSubmit() : onAddSubmit()">{{ isEditMode ? 'Update' : 'Submit' }}
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Menu Rights Tab -->
+          <div *ngIf="activeTab === 'menuRight'">
+            <h5>User Menu Rights</h5>
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Menu Name</th>
+                  <th>Has Right</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let menu of menuRights; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ menu.MenuName }}</td>
+                  <td>
+                    <label class="switch">
+                      <input type="checkbox" [(ngModel)]="menu.HasAccess" />
+                      <span class="slider round"></span>
+                    </label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Update Menu Rights Button -->
+            <div class="text-right">
+              <button type="button" class="btn btn-success" (click)="updateMenuRights()">
+                Update Menu Rights
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer (Only Close Button) -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Popup Modal (Success/Error) -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>

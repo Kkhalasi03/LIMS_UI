@@ -1,0 +1,222 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<section class="vh-100 d-flex align-items-center justify-content-center" style="background: #fff;">
+  <div class="container">
+    <div class="row justify-content-center w-100">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-lg" style="border-radius: 15px;">
+          <div class="card-body p-4 p-md-5" style="background: linear-gradient(to bottom, #a1c4fd, #c2e9fb); border-radius: 15px;">
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center text-info">Sample Registration Form</h3>
+            <form [formGroup]="sampleregistrationForm" (ngSubmit)="onSubmit()">
+
+              <!-- Mobile Number -->
+              <div class="mb-3">
+                <input type="tel" id="MobileNo" formControlName="MobileNo" class="form-control" placeholder="Mobile Number" pattern="^[0-9]{10,15}$" required />
+                <div *ngIf="sampleregistrationForm.get('MobileNo')?.invalid && sampleregistrationForm.get('MobileNo')?.touched">
+                  <small class="text-danger" *ngIf="sampleregistrationForm.get('MobileNo')?.hasError('required')">
+                    Mobile Number is required.
+                  </small>
+                  <small class="text-danger" *ngIf="sampleregistrationForm.get('MobileNo')?.hasError('pattern')">
+                    Mobile Number must be 10-15 digits only.
+                  </small>
+                </div>
+              </div>
+
+              <!-- Title -->
+              <div class="mb-3">
+                <select id="Title" formControlName="Title" class="form-control" required>
+                  <option value="" disabled>Select Title</option>
+                  <option value="Mr.">Mr.</option>
+                  <option value="Ms.">Ms.</option>
+                  <option value="Miss.">Miss.</option>
+                  <option value="Dr.">Dr.</option>
+                </select>
+                <div *ngIf="sampleregistrationForm.get('Title')?.invalid && sampleregistrationForm.get('Title')?.touched">
+                  <small class="text-danger">Title is required.</small>
+                </div>
+              </div>
+
+              <!-- Name Fields -->
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <input type="text" id="FirstName" formControlName="FirstName" class="form-control" placeholder="First Name" required pattern="^[A-Za-z]+$" />
+                  <div *ngIf="sampleregistrationForm.get('FirstName')?.invalid && sampleregistrationForm.get('FirstName')?.touched">
+                    <small class="text-danger" *ngIf="sampleregistrationForm.get('FirstName')?.hasError('required')">
+                      First Name is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleregistrationForm.get('FirstName')?.hasError('pattern')">
+                      First Name must contain only letters.
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <input type="text" id="MiddleName" formControlName="MiddleName" class="form-control" placeholder="Middle Name" pattern="^[A-Za-z]*$" />
+                  <div *ngIf="sampleregistrationForm.get('MiddleName')?.invalid && sampleregistrationForm.get('MiddleName')?.touched">
+                    <small class="text-danger">Middle Name must contain only letters.</small>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <input type="text" id="LastName" formControlName="LastName" class="form-control" placeholder="Last Name" required pattern="^[A-Za-z]+$" />
+                  <div *ngIf="sampleregistrationForm.get('LastName')?.invalid && sampleregistrationForm.get('LastName')?.touched">
+                    <small class="text-danger" *ngIf="sampleregistrationForm.get('LastName')?.hasError('required')">
+                      Last Name is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleregistrationForm.get('LastName')?.hasError('pattern')">
+                      Last Name must contain only letters.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DOB and Age -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <input type="date" id="DOB" formControlName="DOB" class="form-control" (change)="calculateAge()" required />
+                  <div *ngIf="sampleregistrationForm.get('DOB')?.invalid && sampleregistrationForm.get('DOB')?.touched">
+                    <small class="text-danger">Date of Birth is required.</small>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <input type="number" id="Age" formControlName="Age" class="form-control" placeholder="Age" [value]="age" readonly />
+                </div>
+              </div>
+
+              <!-- Gender -->
+              <div class="row">
+                <div class="col mb-3">
+                  <h6 class="text-muted">Gender:</h6>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="male" formControlName="Gender" value="male" />
+                    <label class="form-check-label" for="male">Male</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="female" formControlName="Gender" value="female" />
+                    <label class="form-check-label" for="female">Female</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="other" formControlName="Gender" value="other" />
+                    <label class="form-check-label" for="other">Other</label>
+                  </div>
+                  <div *ngIf="sampleregistrationForm.get('Gender')?.invalid && sampleregistrationForm.get('Gender')?.touched">
+                    <small class="text-danger">Gender selection is required.</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email and Address -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <input type="email" id="EmailId" formControlName="EmailId" class="form-control" placeholder="Email Address" required />
+                  <div *ngIf="sampleregistrationForm.get('EmailId')?.invalid && sampleregistrationForm.get('EmailId')?.touched">
+                    <small class="text-danger" *ngIf="sampleregistrationForm.get('EmailId')?.hasError('required')">
+                      Email is required.
+                    </small>
+                    <small class="text-danger" *ngIf="sampleregistrationForm.get('EmailId')?.hasError('email')">
+                      Please enter a valid email.
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <textarea id="Address" formControlName="Address" class="form-control" placeholder="Address" rows="2" required></textarea>
+                  <div *ngIf="sampleregistrationForm.get('Address')?.invalid && sampleregistrationForm.get('Address')?.touched">
+                    <small class="text-danger">Address is required.</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dropdowns -->
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <select id="CityId" formControlName="CityId" class="form-control" required>
+                    <option value="" disabled>Select City</option>
+                    <option *ngFor="let city of cities" [value]="city.CityId">{{ city.CityName }}</option>
+                  </select>
+                  <div *ngIf="sampleregistrationForm.get('CityId')?.invalid && sampleregistrationForm.get('CityId')?.touched">
+                    <small class="text-danger">City selection is required.</small>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <select id="AreaId" formControlName="AreaId" class="form-control" required>
+                    <option value="" disabled>Select Area</option>
+                    <option *ngFor="let area of areas" [value]="area.AreaId">{{ area.AreaName }}</option>
+                  </select>
+                  <div *ngIf="sampleregistrationForm.get('AreaId')?.invalid && sampleregistrationForm.get('AreaId')?.touched">
+                    <small class="text-danger">Area selection is required.</small>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3 d-flex align-items-center">
+                  <select id="ServiceId" formControlName="ServiceId" class="form-control" required>
+                    <option value="" disabled>Select Service</option>
+                    <option *ngFor="let service of services" [value]="service.ServiceId">{{ service.ServiceName }}</option>
+                  </select>
+                  <div *ngIf="sampleregistrationForm.get('ServiceId')?.invalid && sampleregistrationForm.get('ServiceId')?.touched">
+                    <small class="text-danger">Service selection is required.</small>
+                  </div>
+                  <div class="col-md-1">
+                    <button type="button" class="btn btn-primary" (click)="addServiceToList()"><i class="fa fa-plus"></i> </button>
+                  </div>
+                  <!-- Display selected services -->
+                  <!-- <div *ngIf="selectedServiceIds.length > 0">
+                    <h6>Selected Services:</h6>
+                    <ul>
+                      <li *ngFor="let serviceId of selectedServiceIds">{{ getServiceNameById(serviceId) }}</li>
+                    </ul>
+                  </div> -->
+                   <!-- Selected Services Table -->
+                </div>
+              </div>
+              <div class="row"  *ngIf="selectedServiceDetails.length > 0">
+                <div class="container-fluid mt-4">
+                  <div class="panel panel-default rounded border border-secondary" style="background-color: #fff;">
+                    <div class="panel-body p-1">
+                      <table class="table" *ngIf="selectedServiceDetails.length > 0; else noData">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Service Name</th>
+                            <th>Service Code</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                      <tbody>
+                      <!-- Iterate over the selectedServiceDetails array -->
+                        <tr *ngFor="let item of selectedServiceDetails; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.ServiceName }}</td>
+                          <td>{{ item.ServiceCode }}</td>
+                          <td>
+                            <button class="btn btn-danger" (click)="removeService(i)">
+                              <i class="fa fa-trash"></i> Remove
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <ng-template #noData>
+                      <p>No services selected.</p>
+                    </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit and Reset Buttons -->
+              <div class="row">
+                <div class="col-md-6">
+                  <button class="btn btn-success btn-block" type="submit" [disabled]="!sampleregistrationForm.valid">Submit</button>
+                </div>
+                <div class="col-md-6">
+                  <button class="btn btn-danger btn-block" type="reset" (click)="onReset()">Clear</button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

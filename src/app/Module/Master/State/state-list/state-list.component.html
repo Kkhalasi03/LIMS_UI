@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<div *ngIf="username" class="custom-header d-flex justify-content-between align-items-center">
+  <span>Welcome to LIMS</span>
+
+  <!-- Bootstrap Dropdown -->
+  <div class="dropdown">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fa fa-user"></i> {{ username }}
+    </button>
+    
+    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+      <li>
+        <button class="dropdown-item text-danger" (click)="onLogout()">
+          <i class="fa fa-power-off"></i> Logout
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
+<app-sidenav-bar></app-sidenav-bar>
+<div class="container-fluid">
+  <div class="row align-items-center mb-7">
+    <div class="col-md-11">
+      <label id="statelistlbl" for="statelist" class="form-label"><h3>State List</h3></label>
+    </div>
+    <div class="col-md-1 text-md-end">
+      <button id="addButton" class="btn btn-primary"  (click)="openForm()" >
+        <i class="fa fa-plus me-2"></i> Add
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Dynamically render the form -->
+<div *ngIf="isFormVisibleADD">
+  <app-state-edit (closeFormEvent)="closeForm()" #stateEditComponent></app-state-edit>
+</div>
+<div class="container-fluid">
+  <div class="panel panel-default rounded border border-secondary"> <!-- Using Bootstrap border classes -->
+    <div class="panel-body p-3">
+      <form [formGroup]="applyForm1" (ngSubmit)="searchApplication()">
+        <div class="row">
+          <!-- StateId Field -->
+          <div class="form-group col-sm-2">
+            <label for="StateId">State Id</label>
+          </div>
+          <div class="form-group col-sm-2">
+            <input type="number" class="form-control" id="StateId" placeholder="State Id" name="StateId" formControlName="homeStateId" [(ngModel)]="homeStateId">
+          </div>
+
+          <!-- StateName Field -->
+          <div class="form-group col-sm-2">
+            <label for="StateName">State Name</label>
+          </div>
+          <div class="form-group col-sm-2">
+            <input type="text" class="form-control" id="StateName" placeholder="State Name" name="StateName" formControlName="homeStateName" [(ngModel)]="homeStateName">
+          </div>
+
+          <!-- Status Field -->
+          <div class="form-group col-sm-2">
+            <label for="Status">Status</label>
+          </div>
+          <div class="form-group col-sm-2">
+            <select class="form-control" id="Status" name="Status" (change)="onSelected($event)" [(ngModel)]="selectedValue" formControlName="selectedValue">
+              <option value="null">All</option>
+              <option value="true">Active</option>
+              <option value="false">Disabled</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-sm-12 text-right">
+            <button type="submit" class="btn btn-primary" style="margin-right: 30px;">
+              <i class="glyphicon glyphicon-search"></i> Search
+            </button>
+            <button type="button" class="btn btn-danger" (click)="clearForm()">
+              <i class="glyphicon glyphicon-remove"></i> Close
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt-4" *ngIf="hasSearched">
+  <div class="panel panel-default rounded border border-secondary">
+    <div class="panel-body p-3">
+      <table class="table" *ngIf="isTableVisible && apiResponse && apiResponse.length > 0; else noData">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>State Id</th>
+            <th>State Name</th>
+            <th>State Code</th>
+            <th>Country</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Iterate over the response -->
+          <tr *ngFor="let item of apiResponse; let i = index">
+            
+            <td>{{i+1}}</td>
+            <td>{{ item.StateId }}</td>
+            <td>{{ item.StateName }}</td>
+            <td>{{ item.StateCode }}</td>
+            <td>{{getCountryName(item.CountryId)}}</td>
+            <td>{{item.IsActive}}</td>
+            <td>
+              <button class="btn btn-primary" (click)="openFormEdit(item.StateId, item.StateCode,item.StateName,item.CountryId)">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button class="btn btn-danger" (click)="deleteForm(item.StateId, item.StateName)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- Fallback template if no data exists -->
+<ng-template #noData>
+  <div class="alert alert-warning" *ngIf="true">
+    No data found
+  </div>
+</ng-template>
+  <!-- Popup Modal -->
+  <div *ngIf="showPopup" class="popup">
+    <div class="popup-content">
+      <p>{{ popupMessage }}</p>
+      <button (click)="closePopup()">Close</button>
+    </div>
+  </div>
+  <!-- Dynamically render the form -->
+<div *ngIf="isFormVisible">
+    <app-state-edit (closeFormEvent)="closeFormEdit()" #stateEditComponent></app-state-edit>
+</div>

@@ -1,0 +1,165 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Header Section with User Info -->
+<div *ngIf="username" class="custom-header d-flex justify-content-between align-items-center">
+  <span>Welcome to LIMS</span>
+  <div class="dropdown">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fa fa-user"></i> {{ username }}
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+      <li>
+        <button class="dropdown-item text-danger" (click)="onLogout()">
+          <i class="fa fa-power-off"></i> Logout
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<app-sidenav-bar></app-sidenav-bar>
+
+<!-- Header Title -->
+<div class="container-fluid">
+  <div class="row align-items-center mb-3">
+    <div class="col-md-12">
+      <label class="form-label">
+        <h3>Test Approval Details</h3>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Search & Filter Form -->
+<div class="container-fluid">
+  <div class="panel panel-default rounded border border-secondary">
+    <div class="panel-body p-3">
+      <form [formGroup]="applyForm1" (ngSubmit)="searchApplication()">
+        <div class="row">
+          <!-- SampleRegisterId Field -->
+          <div class="form-group col-sm-3">
+            <label for="SampleRegisterId">Sample Register Id</label>
+            <input type="number" class="form-control" id="SampleRegisterId" placeholder="Sample Register Id" name="SampleRegisterId" formControlName="homeSampleRegisterId" [(ngModel)]="homeSampleRegisterId">
+          </div>
+
+          <!-- First Name Field -->
+          <div class="form-group col-sm-3">
+            <label for="FirstName">First Name</label>
+            <input type="text" class="form-control" id="FirstName" placeholder="First Name" name="FirstName" formControlName="homeFirstName" [(ngModel)]="homeFirstName">
+          </div>
+
+          <!-- Middle Name Field -->
+          <div class="form-group col-sm-3">
+            <label for="MiddleName">Middle Name</label>
+            <input type="text" class="form-control" id="MiddleName" placeholder="Middle Name" name="MiddleName" formControlName="homeMiddleName"[(ngModel)]="homeMiddleName">
+          </div>
+
+          <!-- Date Field -->
+          <div class="form-group col-sm-3">
+            <label for="Date">Date</label>
+            <input type="date" class="form-control" id="Date" formControlName="homeDate" [(ngModel)]="homeDate"/>
+          </div>
+          <!-- Status Field -->
+          <div class="form-group col-sm-3">
+            <label for="Status">Status</label>
+            <select class="form-control" id="Status" formControlName="homeStatus">
+              <option value="">Select Status</option>
+              <option value="A">Approved</option>
+              <option value="V">Validated</option>
+              <option value="N">New</option>
+            </select>
+          </div>
+           <!-- Service Dropdown -->
+           <!-- <div class="form-group col-sm-3">
+            <label for="Service">Service</label>
+            <select class="form-control" id="Service" formControlName="homeServiceId">
+              <option value="">Select Service</option>
+              <option *ngFor="let service of services" [value]="service.ServiceId">
+                {{ service.ServiceName }}
+              </option>
+            </select>
+          </div> -->
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-sm-12 text-right">
+            <button type="submit" class="btn btn-primary me-3">
+              <i class="fa fa-search"></i> Search
+            </button>
+            <button type="button" class="btn btn-danger" (click)="clearForm()">
+              <i class="fa fa-times"></i> Clear
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Table displaying Test Results -->
+<div class="container-fluid mt-4" *ngIf="isTableVisible && apiResponse.length > 0">
+  <div class="panel panel-default rounded border border-secondary">
+    <div class="panel-body p-3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Sample Register Id</th>
+            <th>Name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of apiResponse; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>
+              <button class="btn btn-link p-0" (click)="viewTestResult(item.SampleRegisterId)"
+              [ngClass]="{
+                'text-info': item.Status === 'N',
+                'text-success': item.Status === 'A',
+                'text-warning': item.Status === 'V'
+              }">
+                {{ item.SampleRegisterId }}
+              </button>
+            </td>
+            <td>{{ item.Title }} {{ item.FirstName }} {{ item.MiddleName }}</td>
+            <td>
+              <button *ngIf="item.Status === 'A'" class="btn btn-sm btn-light" (click)="downloadPDF(item.SampleRegisterId)">
+                <i class="fa fa-file-pdf-o text-danger"></i>
+              </button>
+            </td>
+            <td>
+              <button *ngIf="item.Status === 'A'" class="btn btn-custom-mail btn-sm" (click)="sendMail(item.SampleRegisterId)">
+                <i class="fa fa-envelope"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- No Data Found Message -->
+<div *ngIf="hasSearched && apiResponse.length === 0" class="alert alert-warning mt-4">
+  <strong>No data found.</strong>
+</div>
+  
+  <!-- Popup Modal -->
+  <div *ngIf="showPopup" class="popup">
+    <div class="popup-content">
+      <p>{{ popupMessage }}</p>
+      <button (click)="closePopup()">Close</button>
+    </div>
+  </div>
+  <!-- Popup Modal -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>

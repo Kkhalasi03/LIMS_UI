@@ -1,0 +1,265 @@
+<div class="popup" *ngIf="isFormVisible">
+  <div class="popup-content">
+    <span class="close" (click)="closeForm()">&times;</span>
+    <h2>{{ isEditMode ? 'Edit Service' : 'Add Service' }}</h2>
+    <hr />
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'general'" (click)="activeTab = 'general'">General</a>
+      </li>
+      <li class="nav-item" *ngIf="isEditMode">
+        <a class="nav-link" [class.active]="activeTab === 'mapping'" (click)="fetchMappings(); activeTab = 'mapping'">Mapping</a>
+      </li>
+    </ul>
+
+    <!-- General Tab -->
+    <div *ngIf="activeTab === 'general'">
+      <form [formGroup]="serviceForm" (ngSubmit)="isEditMode ? onSubmit() : onAddSubmit()">
+        <div class="row mb-3">
+          <label for="serviceId" class="col-25 col-form-label">Service ID</label>
+          <div class="col-75">
+            <input formControlName="ServiceId" type="number" id="serviceId" class="form-control" [readonly]="isEditMode" />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="serviceCode" class="col-25 col-form-label">Service Code</label>
+          <div class="col-75">
+            <input formControlName="ServiceCode" type="text" id="serviceCode" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="serviceName" class="col-25 col-form-label">Service Name</label>
+          <div class="col-75">
+            <input formControlName="ServiceName" type="text" id="serviceName" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="b2bAmount" class="col-25 col-form-label">B2B Amount</label>
+          <div class="col-75">
+            <input formControlName="B2BAmount" type="number" id="b2bAmount" class="form-control" required min="0" />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="b2cAmount" class="col-25 col-form-label">B2C Amount</label>
+          <div class="col-75">
+            <input formControlName="B2CAmount" type="number" id="b2cAmount" class="form-control" required min="0" />
+          </div>
+        </div>
+
+        <!-- Submit & Close Buttons -->
+        <div class="row">
+          <div class="col-12 d-flex justify-content-between gap-4">
+            <button type="submit" class="btn btn-primary btn-md" [disabled]="serviceForm.invalid">
+              <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+            </button>
+            <button type="button" class="btn btn-danger btn-md" (click)="closeForm()">
+              <i class="fa fa-close"></i> Close
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Mapping Tab -->
+    <div *ngIf="activeTab === 'mapping'" class="table-container">
+      <h3>Service-Test Mapping</h3>
+        <!-- Add Mapping Button Positioned on the Right -->
+        <div class="d-flex justify-content-end mb-3">
+          <button class="btn btn-primary" (click)="openAddMappingModal()"><i class="fa fa-plus me-2"></i>Add Mapping</button>
+        </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Test ID</th>
+            <th>Test Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mapping of serviceTestMappings; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ mapping.TestId }}</td>
+            <td>{{ getTestName(mapping.TestId) }}</td>
+            <td>
+              <button class="btn" (click)="deleteForm(mapping.ServiceTestId)">
+                <i class="fa fa-trash-o" style="font-size:36px;color:red"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Close Button in Mapping Tab -->
+      <div class="text-end mt-3">
+        <button class="btn btn-danger" (click)="closeForm()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Mapping Modal -->
+<div class="popup" *ngIf="isMappingFormVisible">
+  <div class="popup-content">
+    <span class="close" (click)="closeMappingForm()">&times;</span>
+    <h2>Add Test to Service</h2>
+    <hr />
+    <form (ngSubmit)="addMapping()">
+      <label for="testDropdown">Select Test:</label>
+      <select id="testDropdown" class="form-control" [(ngModel)]="selectedTestId" name="selectedTestId">
+        <option *ngFor="let test of testMasterList" [value]="test.TestId">{{ test.TestName }}</option>
+      </select>
+
+      <!-- Save and Cancel Buttons -->
+      <div class="d-flex justify-content-between mt-3">
+        <button type="submit" class="btn btn-success">
+          <i class="fa fa-save"></i> Save
+        </button>
+        <button type="button" class="btn btn-danger" (click)="closeMappingForm()">
+          <i class="fa fa-times"></i> Close
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- <div class="popup" *ngIf="isFormVisible">
+  <div class="popup-content">
+    <span class="close" (click)="closeForm()">&times;</span>
+    <h2>{{ isEditMode ? 'Edit Service' : 'Add Service' }}</h2>
+    <hr />
+    <form [formGroup]="serviceForm" (ngSubmit)="isEditMode ? onSubmit() : onAddSubmit()">
+       -->
+      <!-- Service ID (Readonly in Edit Mode) -->
+      <!-- <div class="row mb-3">
+        <label for="serviceId" class="col-25 col-form-label">Service ID</label>
+        <div class="col-75">
+          <input
+            formControlName="ServiceId"
+            type="number"
+            id="serviceId"
+            class="form-control"
+            placeholder="Service ID"
+            [readonly]="isEditMode"
+          />
+        </div>
+      </div> -->
+
+      <!-- Service Code -->
+      <!-- <div class="row mb-3">
+        <label for="serviceCode" class="col-25 col-form-label">Service Code</label>
+        <div class="col-75">
+          <input
+            formControlName="ServiceCode"
+            type="text"
+            id="serviceCode"
+            class="form-control"
+            placeholder="Service Code"
+            required
+            pattern="^(?!\s*$)[A-Za-z0-9]+(?:[ -][A-Za-z0-9]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="serviceForm.get('ServiceCode')?.invalid && serviceForm.get('ServiceCode')?.touched" class="text-danger">
+        <div *ngIf="serviceForm.get('ServiceCode')?.hasError('required')">Service Code is required.</div>
+        <div *ngIf="serviceForm.get('ServiceCode')?.hasError('pattern')">Service Code must contain only letters and spaces in between.</div>
+      </div> -->
+
+      <!-- Service Name -->
+      <!-- <div class="row mb-3">
+        <label for="serviceName" class="col-25 col-form-label">Service Name</label>
+        <div class="col-75">
+          <input
+            formControlName="ServiceName"
+            type="text"
+            id="serviceName"
+            class="form-control"
+            placeholder="Service Name"
+            required
+            pattern="^(?!\s*$)[A-Za-z0-9]+(?:[ -][A-Za-z0-9]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="serviceForm.get('ServiceName')?.invalid && serviceForm.get('ServiceName')?.touched" class="text-danger">
+        <div *ngIf="serviceForm.get('ServiceName')?.hasError('required')">Service Name is required.</div>
+        <div *ngIf="serviceForm.get('ServiceName')?.hasError('pattern')">Service Name must contain only letters and spaces in between.</div>
+      </div> -->
+
+      <!-- B2B Amount -->
+      <!-- <div class="row mb-3">
+        <label for="b2bAmount" class="col-25 col-form-label">B2B Amount</label>
+        <div class="col-75">
+          <input
+            formControlName="B2BAmount"
+            type="number"
+            id="b2bAmount"
+            class="form-control"
+            placeholder="B2B Amount"
+            required
+            min="0"
+          />
+        </div>
+      </div>
+      <div *ngIf="serviceForm.get('B2BAmount')?.invalid && serviceForm.get('B2BAmount')?.touched" class="text-danger">
+        <div *ngIf="serviceForm.get('B2BAmount')?.hasError('required')">B2B Amount is required.</div>
+        <div *ngIf="serviceForm.get('B2BAmount')?.hasError('min')">B2B Amount must be greater than or equal to 0.</div>
+      </div> -->
+
+      <!-- B2C Amount -->
+      <!-- <div class="row mb-3">
+        <label for="b2cAmount" class="col-25 col-form-label">B2C Amount</label>
+        <div class="col-75">
+          <input
+            formControlName="B2CAmount"
+            type="number"
+            id="b2cAmount"
+            class="form-control"
+            placeholder="B2C Amount"
+            required
+            min="0"
+          />
+        </div>
+      </div>
+      <div *ngIf="serviceForm.get('B2CAmount')?.invalid && serviceForm.get('B2CAmount')?.touched" class="text-danger">
+        <div *ngIf="serviceForm.get('B2CAmount')?.hasError('required')">B2C Amount is required.</div>
+        <div *ngIf="serviceForm.get('B2CAmount')?.hasError('min')">B2C Amount must be greater than or equal to 0.</div>
+      </div> -->
+
+      <!-- Submit & Close Buttons -->
+      <!-- <div class="row">
+        <div class="col-12 d-flex justify-content-between gap-4">
+          <button
+            type="submit"
+            class="btn btn-primary btn-md"
+            [disabled]="serviceForm.invalid"
+          >
+            <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning btn-md"
+            (click)="closeForm()"
+          >
+            <i class="fa fa-close"></i> Close
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div> -->
+
+<!-- Popup Modal (Success/Error) -->
+<!-- <div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div> -->

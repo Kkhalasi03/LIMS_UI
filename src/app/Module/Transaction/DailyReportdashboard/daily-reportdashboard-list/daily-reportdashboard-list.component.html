@@ -1,0 +1,129 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Header Section with User Info -->
+<div *ngIf="username" class="custom-header d-flex justify-content-between align-items-center">
+    <span>Welcome to LIMS</span>
+    <div class="dropdown">
+      <button class="btn btn-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-user"></i> {{ username }}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="userDropdown">
+        <li>
+          <button class="dropdown-item text-danger" (click)="onLogout()">
+            <i class="fa fa-power-off"></i> Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Sidebar -->
+  <app-sidenav-bar></app-sidenav-bar>
+  
+  <!-- Header Title -->
+  <div class="container-fluid">
+    <div class="row align-items-center mb-3">
+      <div class="col-md-12">
+        <label class="form-label">
+          <h3>Report Dashboard</h3>
+        </label>
+      </div>
+    </div>
+  </div>
+<!-- Search Panel -->
+<div class="container-fluid">
+  <div class="card shadow-sm border border-secondary">
+    <div class="card-body">
+      <form (ngSubmit)="searchReport()">
+        <div class="row">
+          <div class="col-md-3">
+            <label for="branch" class="form-label">Branch</label>
+            <select class="form-control" id="branch" [(ngModel)]="branchId" name="branchId">
+              <option value="">Select Branch</option>
+              <option *ngFor="let branch of branchList" [value]="branch.BranchId">{{ branch.BranchName }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label for="b2b" class="form-label">B2B</label>
+            <select class="form-control" id="b2b" [(ngModel)]="b2bId" name="b2bId">
+              <option value="">Select B2B</option>
+              <option *ngFor="let b2b of b2bList" [value]="b2b.B2BId">{{ b2b.B2BName }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label for="fromDate" class="form-label">From Date</label>
+            <input type="date" class="form-control" id="fromDate" [(ngModel)]="fromDate" name="fromDate">
+          </div>
+
+          <div class="col-md-3">
+            <label for="toDate" class="form-label">To Date</label>
+            <input type="date" class="form-control" id="toDate" [(ngModel)]="toDate" name="toDate">
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col text-end">
+            <button type="submit" class="btn btn-primary me-2">
+              <i class="fa fa-search"></i> Search
+            </button>
+            <button type="button" class="btn btn-success me-2" (click)="downloadExcelReport()">
+              <i class="fa fa-file-excel-o"></i> Excel Report
+            </button>
+            <button type="button" class="btn btn-danger" (click)="clearForm()">
+              <i class="fa fa-times"></i> Clear
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Data Table -->
+<div class="container-fluid mt-4" *ngIf="reportData.length > 0">
+  <div class="card shadow-sm border">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient ID</th>
+              <th>Registered Date</th>
+              <th>Patient Name</th>
+              <th>Branch Name</th>
+              <th>B2B Name</th>
+              <th>Service Name</th>
+              <th>Total Amount</th>
+              <th>Paid Amount</th>
+              <th>Due Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of reportData; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.SampleRegisterId }}</td>
+              <td>{{ item.CreatedOn | date:'yyyy-MM-dd' }}</td>
+              <td>{{ item.Name }}</td>
+              <td>{{ item.BranchName }}</td>
+              <td>{{ item.B2BName }}</td>
+              <td>{{ item.ServiceNames }}</td>
+              <td>{{ item.TotalAmount  }}</td>
+              <td>{{ item.PaidAmount }}</td>
+              <td class="fw-bold text-danger">{{ (item.TotalAmount - item.PaidAmount)}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- No Data Message -->
+<div *ngIf="hasSearched && reportData.length === 0" class="alert alert-warning mt-3 text-center">
+  No data found.
+</div>

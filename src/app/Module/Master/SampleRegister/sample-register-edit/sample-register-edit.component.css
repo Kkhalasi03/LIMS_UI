@@ -1,0 +1,25 @@
+/* Custom table styling */
+.table {
+    font-size: 16px; /* Increase font size */
+    width: 100%; /* Ensure table uses full width */
+  }
+  
+  .table th, .table td {
+    padding: 12px; /* Increase padding in cells for better readability */
+    text-align: center; /* Center align text in cells */
+  }
+  
+  /* Add borders to make the table more distinct */
+  .table-bordered {
+    border: 1px solid #ddd;
+  }
+  
+  .table-striped tbody tr:nth-child(odd) {
+    background-color: #f9f9f9; /* Add a light background color for odd rows */
+  }
+  
+  /* Optional: Add some space between the table and other content */
+  .table-container {
+    margin-top: 20px;
+  }
+  

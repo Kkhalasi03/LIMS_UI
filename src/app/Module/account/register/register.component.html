@@ -1,0 +1,158 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <section class="vh-100" style="background: #fff;">
+  <div class="container py-5 h-100">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-lg" style="border-radius: 15px;">
+          <div class="card-body p-4 p-md-5" style="background: linear-gradient(to bottom, #e6f9e6, #87ceeb); border-radius: 15px;">
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center text-info">Registration Form</h3>
+            <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+  
+              <!-- Full Name and User Name -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <input type="text" id="fullName" formControlName="FullName" class="form-control form-control-sm" placeholder="Full Name" required pattern="^(?!\s*$)[A-Za-z]+(?:[ -][A-Za-z]+)*$"                    />
+                    <div *ngIf="registrationForm.get('FullName')?.invalid && registrationForm.get('FullName')?.touched">
+                      <small class="text-danger" *ngIf="registrationForm.get('FullName')?.hasError('required')">
+                        Full Name is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registrationForm.get('FullName')?.hasError('pattern')">
+                        Full Name should contain only letters and spaces in between.
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <input type="text" id="userName" formControlName="UserName" class="form-control form-control-sm" placeholder="User Name" required pattern="^(?!\s*$)(?=.*[A-Za-z])[A-Za-z0-9!@#$%^&*()_+={}\[\]:;,.<>?/-]+$" />
+                    <div *ngIf="registrationForm.get('UserName')?.invalid && registrationForm.get('UserName')?.touched">
+                      <small class="text-danger" *ngIf="registrationForm.get('UserName')?.hasError('required')">
+                        User Name is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registrationForm.get('UserName')?.hasError('pattern')">
+                        User Name must contain at least one letter and cannot contain only digits, special characters, or whitespace.
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Birthday and Gender -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <input type="date" class="form-control form-control-sm" id="birthdayDate" formControlName="BirthDay" required />
+                    <div *ngIf="registrationForm.get('BirthDay')?.invalid && registrationForm.get('BirthDay')?.touched">
+                      <small class="text-danger" *ngIf="registrationForm.get('BirthDay')?.hasError('required')">
+                        Birthday is required.
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <h6 class="mb-2 pb-1 text-muted">Gender:</h6>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" formControlName="Gender" id="femaleGender" value="female"/>
+                    <label class="form-check-label" for="femaleGender">Female</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" formControlName="Gender" id="maleGender" value="male" checked />
+                    <label class="form-check-label" for="maleGender">Male</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" formControlName="Gender" id="otherGender" value="other" />
+                    <label class="form-check-label" for="otherGender">Other</label>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Email and Phone Number -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <input type="email" id="emailAddress" formControlName="EmailId" class="form-control form-control-sm" placeholder="Email Address" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required />
+                    <div *ngIf="registrationForm.get('EmailId')?.invalid && registrationForm.get('EmailId')?.touched">
+                      <small class="text-danger" *ngIf="registrationForm.get('EmailId')?.hasError('required')">
+                        Email is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registrationForm.get('EmailId')?.hasError('pattern')">
+                        Please enter a valid email.
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <input type="tel" id="MobileNo" formControlName="MobileNo" class="form-control form-control-sm" placeholder="Mobile Number" pattern="^[0-9]{10,15}$" required />
+                    <div *ngIf="registrationForm.get('MobileNo')?.invalid && registrationForm.get('MobileNo')?.touched">
+                      <small class="text-danger" *ngIf="registrationForm.get('MobileNo')?.hasError('required')">
+                        Phone number is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registrationForm.get('MobileNo')?.hasError('pattern')">
+                        Please enter a valid phone number (only numbers).
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Password and Confirm Password -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <input type="password" id="password" formControlName="Password" class="form-control form-control-sm" placeholder="Password" required  pattern="^(?!\s*$)[A-Za-z0-9!@#$%^&*()_+={}\[\]:;,.<>?/-]+$"/>
+                    <div *ngIf="registrationForm.get('Password')?.invalid && registrationForm.get('Password')?.touched">
+                      <small class="text-danger" *ngIf="registrationForm.get('Password')?.hasError('required')">
+                        Password is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registrationForm.get('Password')?.hasError('pattern')">
+                        Password can contain letters, numbers, and special characters, but cannot contain only whitespace.
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <input type="password" id="confirmPassword" formControlName="ConfirmPassword" class="form-control form-control-sm" placeholder="Confirm Password" required pattern="^(?!\s*$)[A-Za-z0-9!@#$%^&*()_+={}\[\]:;,.<>?/-]+$"/>
+                    <div *ngIf="registrationForm.get('ConfirmPassword')?.invalid && registrationForm.get('ConfirmPassword')?.touched">
+                      <small class="text-danger" *ngIf="registrationForm.get('ConfirmPassword')?.hasError('required')">
+                        Confirm Password is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registrationForm.get('ConfirmPassword')?.hasError('pattern')">
+                        Password can contain letters, numbers, and special characters, but cannot contain only whitespace.
+                      </small>
+                    </div>
+                    <div *ngIf="registrationForm.get('Password')?.value !== registrationForm.get('ConfirmPassword')?.value && registrationForm.get('ConfirmPassword')?.touched">
+                      <small class="text-danger">Passwords do not match</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="row">
+                <div class="col-sm-6">
+                  <button class="btn btn-success btn-block" style="border-radius: 8px; font-size: 16px; padding: 10px;" type="submit" [disabled]="!registrationForm.valid || registrationForm.get('Password')?.value !== registrationForm.get('ConfirmPassword')?.value">Submit</button>
+                </div>
+                <div class="col-sm-6 d-flex justify-content-end">
+                  <button type="reset" class="btn btn-danger btn-block" style="border-radius: 8px; font-size: 16px; padding: 10px;" (click)="onReset()">Clear</button>
+                </div>
+              </div>
+
+              <!-- Login Link -->
+              <div class="text-center mt-3">
+                <p class="text-muted">Already have an account? <a routerLink="/login" style="color: #007bff;">Login</a></p>
+              </div>
+  
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

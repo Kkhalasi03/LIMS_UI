@@ -1,0 +1,92 @@
+<div class="popup" *ngIf="isFormVisible">
+    <div class="popup-content">
+      <span class="close" (click)="closeForm()">&times;</span>
+      <h2>{{ isEditMode ? 'Edit District' : 'Add District' }}</h2>
+      <hr />
+      <form [formGroup]="districtForm" (ngSubmit)="isEditMode ? onSubmit() : onAddsubmit()">
+        
+        <!-- District ID (Readonly in Edit Mode) -->
+        <div class="row mb-3">
+          <label for="districtId" class="col-25 col-form-label">District ID</label>
+          <div class="col-75">
+            <input
+              formControlName="DistrictId"
+              type="number"
+              id="districtId"
+              class="form-control"
+              placeholder="District ID"
+              [readonly]="isEditMode"
+            />
+          </div>
+        </div>
+        <!-- District Name -->
+        <div class="row mb-3">
+          <label for="districtName" class="col-25 col-form-label">District Name</label>
+          <div class="col-75">
+            <input
+              formControlName="DistrictName"
+              type="text"
+              id="districtName"
+              class="form-control"
+              placeholder="District Name"
+              required
+              pattern="^(?!\s*$)[A-Za-z]+(?:[ -][A-Za-z]+)*$"
+            />
+          </div>
+        </div>
+        <div *ngIf="districtForm.get('DistrictName')?.invalid && districtForm.get('DistrictName')?.touched" class="text-danger">
+          <div *ngIf="districtForm.get('DistrictName')?.hasError('required')">District Name is required.</div>
+          <div *ngIf="districtForm.get('DistrictName')?.hasError('pattern')">District Name must contain only letters and spaces in between.</div>
+        </div>
+  
+        <!-- State -->
+        <div class="row mb-3">
+          <label for="stateId" class="col-25 col-form-label">State</label>
+          <div class="col-75">
+            <select
+              formControlName="StateId"
+              class="form-control"
+              required
+            >
+              <option value="" disabled>Select a State</option>
+              <option *ngFor="let state of states" [value]="state.StateId">
+                {{ state.StateName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="districtForm.get('StateId')?.invalid && districtForm.get('StateId')?.touched" class="text-danger">
+          <div *ngIf="districtForm.get('StateId')?.hasError('required')">State is required.</div>
+        </div>
+  
+        <!-- Submit & Close Buttons -->
+        <div class="row">
+          <div class="col-12 d-flex justify-content-between gap-4">
+            <button
+              type="submit"
+              class="btn btn-primary btn-md"
+              [disabled]="districtForm.invalid"
+            >
+              <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning btn-md"
+              (click)="closeForm()"
+            >
+              <i class="fa fa-close"></i> Close
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Popup Modal (Success/Error) -->
+  <div *ngIf="showPopup" class="popup">
+    <div class="popup-content">
+      <p>{{ popupMessage }}</p>
+      <button (click)="closePopup()">Close</button>
+    </div>
+  </div>
+  

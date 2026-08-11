@@ -1,0 +1,113 @@
+<div class="popup" *ngIf="isFormVisible">
+    <div class="popup-content">
+      <span class="close" (click)="closeForm()">&times;</span>
+      <h2>{{ isEditMode ? 'Edit City' : 'Add City' }}</h2>
+      <hr />
+      <form [formGroup]="cityForm" (ngSubmit)="isEditMode ? onSubmit() : onAddsubmit()">
+        
+        <!-- City ID (Readonly in Edit Mode) -->
+        <div class="row mb-3">
+            <label for="cityId" class="col-25 col-form-label">City ID</label>
+            <div class="col-75">
+              <input
+                formControlName="CityId"
+                type="number"
+                id="CityId"
+                class="form-control"
+                placeholder="City ID"
+                [readonly]="isEditMode"
+              />
+            </div>
+          </div>
+  
+        <!-- City Name -->
+        <div class="row mb-3">
+          <label for="cityName" class="col-25 col-form-label">City Name</label>
+          <div class="col-75">
+            <input
+              formControlName="CityName"
+              type="text"
+              id="cityName"
+              class="form-control"
+              placeholder="City Name"
+              required
+              pattern="^(?!\s*$)[A-Za-z]+(?:[ -][A-Za-z]+)*$"
+            />
+          </div>
+        </div>
+        <div *ngIf="cityForm.get('CityName')?.invalid && cityForm.get('CityName')?.touched" class="text-danger">
+          <div *ngIf="cityForm.get('CityName')?.hasError('required')">City Name is required.</div>
+          <div *ngIf="cityForm.get('CityName')?.hasError('pattern')">City Name must contain only letters and spaces in between.</div>
+        </div>
+  
+        <!-- State (StateId) -->
+        <div class="row mb-3">
+          <label for="stateId" class="col-25 col-form-label">State</label>
+          <div class="col-75">
+            <select
+              formControlName="StateId"
+              class="form-control"
+              required
+            >
+              <option value="" disabled>Select a State</option>
+              <option *ngFor="let state of states" [value]="state.StateId">
+                {{ state.StateName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="cityForm.get('StateId')?.invalid && cityForm.get('StateId')?.touched" class="text-danger">
+          <div *ngIf="cityForm.get('StateId')?.hasError('required')">State is required.</div>
+        </div>
+  
+        <!-- District (DistrictId) -->
+        <div class="row mb-3">
+          <label for="districtId" class="col-25 col-form-label">District</label>
+          <div class="col-75">
+            <select
+              formControlName="DistrictId"
+              class="form-control"
+              required
+            >
+              <option value="" disabled>Select a District</option>
+              <option *ngFor="let district of districts" [value]="district.DistrictId">
+                {{ district.DistrictName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="cityForm.get('DistrictId')?.invalid && cityForm.get('DistrictId')?.touched" class="text-danger">
+          <div *ngIf="cityForm.get('DistrictId')?.hasError('required')">District is required.</div>
+        </div>
+  
+        <!-- Submit & Close Buttons -->
+        <div class="row">
+          <div class="col-12 d-flex justify-content-between gap-4">
+            <button
+              type="submit"
+              class="btn btn-primary btn-md"
+              [disabled]="cityForm.invalid"
+            >
+              <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning btn-md"
+              (click)="closeForm()"
+            >
+              <i class="fa fa-close"></i> Close
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Popup Modal (Success/Error) -->
+  <div *ngIf="showPopup" class="popup">
+    <div class="popup-content">
+      <p>{{ popupMessage }}</p>
+      <button (click)="closePopup()">Close</button>
+    </div>
+  </div>
+  

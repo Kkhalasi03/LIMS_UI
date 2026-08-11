@@ -1,0 +1,135 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- TestMaster Form Modal (Add/Edit) -->
+<div class="popup" *ngIf="isFormVisible">
+  <div class="popup-content">
+    <span class="close" (click)="closeForm()">&times;</span>
+    <h2>{{ isEditMode ? 'Edit TestMaster' : 'Add TestMaster' }}</h2>
+    <hr />
+    <form [formGroup]="testMasterForm" (ngSubmit)="isEditMode ? onSubmit() : onAddSubmit()">
+
+      <!-- Test ID (Readonly in Edit Mode) -->
+      <div class="row mb-3">
+        <label for="testId" class="col-25 col-form-label">Test ID</label>
+        <div class="col-75">
+          <input
+            formControlName="TestId"
+            type="number"
+            id="testId"
+            class="form-control"
+            placeholder="Test ID"
+            [readonly]="isEditMode"
+          />
+        </div>
+      </div>
+
+      <!-- Test Code -->
+      <div class="row mb-3">
+        <label for="testCode" class="col-25 col-form-label">Test Code</label>
+        <div class="col-75">
+          <input
+            formControlName="TestCode"
+            type="text"
+            id="testCode"
+            class="form-control"
+            placeholder="Test Code"
+            required
+            pattern="^(?!\s*$)[A-Za-z0-9]+(?:[ -][A-Za-z0-9]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="testMasterForm.get('TestCode')?.invalid && testMasterForm.get('TestCode')?.touched" class="text-danger">
+        <div *ngIf="testMasterForm.get('TestCode')?.hasError('required')">Test Code is required.</div>
+        <div *ngIf="testMasterForm.get('TestCode')?.hasError('pattern')">Test Code must contain only letters, numbers, and spaces in between.</div>
+      </div>
+
+      <!-- Test Name -->
+      <div class="row mb-3">
+        <label for="testName" class="col-25 col-form-label">Test Name</label>
+        <div class="col-75">
+          <input
+            formControlName="TestName"
+            type="text"
+            id="testName"
+            class="form-control"
+            placeholder="Test Name"
+            required
+            pattern="^(?!\s*$)[A-Za-z0-9\[\]\(\)]+(?:[ -%][A-Za-z0-9\[\]\(\)-]+)*$"
+          />
+        </div>
+      </div>
+      <div *ngIf="testMasterForm.get('TestName')?.invalid && testMasterForm.get('TestName')?.touched" class="text-danger">
+        <div *ngIf="testMasterForm.get('TestName')?.hasError('required')">Test Name is required.</div>
+        <div *ngIf="testMasterForm.get('TestName')?.hasError('pattern')">Test Name must contain only letters and spaces in between.</div>
+      </div>
+
+      <!-- Reference Value -->
+      <div class="row mb-3">
+        <label for="referenceValue" class="col-25 col-form-label">Reference Value</label>
+        <div class="col-75">
+          <input
+            formControlName="ReferenceValue"
+            type="text"
+            id="referenceValue"
+            class="form-control"
+            placeholder="e.g., 4.5 - 6.7"
+            required
+          />
+        </div>
+      </div>
+      <div *ngIf="testMasterForm.get('ReferenceValue')?.invalid && testMasterForm.get('ReferenceValue')?.touched" class="text-danger">
+        <div *ngIf="testMasterForm.get('ReferenceValue')?.hasError('required')">Reference Value is required.</div>
+      </div>
+
+      <!-- Unit -->
+      <div class="row mb-3">
+        <label for="unit" class="col-25 col-form-label">Unit</label>
+        <div class="col-75">
+          <input
+            formControlName="Unit"
+            type="text"
+            id="unit"
+            class="form-control"
+            placeholder="e.g., g/dl"
+            required
+          />
+        </div>
+      </div>
+      <div *ngIf="testMasterForm.get('Unit')?.invalid && testMasterForm.get('Unit')?.touched" class="text-danger">
+        <div *ngIf="testMasterForm.get('Unit')?.hasError('required')">Unit is required.</div>
+      </div>
+
+      <!-- Submit & Close Buttons -->
+      <div class="row">
+        <div class="col-12 d-flex justify-content-between gap-4">
+          <button
+            type="submit"
+            class="btn btn-primary btn-md"
+            [disabled]="testMasterForm.invalid"
+          >
+            <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning btn-md"
+            (click)="closeForm()"
+          >
+            <i class="fa fa-close"></i> Close
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Popup Modal (Success/Error) -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>

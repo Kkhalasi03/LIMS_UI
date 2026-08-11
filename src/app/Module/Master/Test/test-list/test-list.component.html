@@ -1,0 +1,162 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<div *ngIf="username" class="custom-header d-flex justify-content-between align-items-center">
+  <span>Welcome to LIMS</span>
+
+  <!-- Bootstrap Dropdown -->
+  <div class="dropdown">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fa fa-user"></i> {{ username }}
+    </button>
+    
+    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+      <li>
+        <button class="dropdown-item text-danger" (click)="onLogout()">
+          <i class="fa fa-power-off"></i> Logout
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<app-sidenav-bar></app-sidenav-bar>
+
+<div class="container-fluid">
+  <div class="row align-items-center mb-7">
+    <div class="col-md-11">
+      <label id="testMasterListLbl" for="testMasterList" class="form-label">
+        <h3>Test Master</h3>
+      </label>
+    </div>
+    <div class="col-md-1 text-md-end">
+      <button id="addButton" class="btn btn-primary" (click)="openForm()">
+        <i class="fa fa-plus me-2"></i> Add
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Dynamically render the form -->
+<div *ngIf="isFormVisibleADD">
+  <app-test-edit (closeFormEvent)="closeForm()" #testMasterEditComponent></app-test-edit>
+</div>
+
+<!-- Table -->
+<div class="container-fluid">
+  <div class="panel panel-default rounded border border-secondary">
+    <div class="panel-body p-3">
+      <form [formGroup]="applyForm1" (ngSubmit)="searchApplication()">
+        <div class="row">
+          <!-- TestId Field -->
+          <div class="form-group col-sm-2">
+            <label for="TestId">Test Id</label>
+          </div>
+          <div class="form-group col-sm-2">
+            <input type="number" class="form-control" id="TestId" placeholder="Test Id" name="TestId" formControlName="homeTestId" [(ngModel)]="homeTestId">
+          </div>
+
+          <!-- TestCode Field -->
+          <div class="form-group col-sm-2">
+            <label for="TestCode">Test Code</label>
+          </div>
+          <div class="form-group col-sm-2">
+            <input type="text" class="form-control" id="TestCode" placeholder="Test Code" name="TestCode" formControlName="homeTestCode" [(ngModel)]="homeTestCode">
+          </div>
+
+          <!-- TestName Field -->
+          <div class="form-group col-sm-2">
+            <label for="TestName">Test Name</label>
+          </div>
+          <div class="form-group col-sm-2">
+            <input type="text" class="form-control" id="TestName" placeholder="Test Name" name="TestName" formControlName="homeTestName" [(ngModel)]="homeTestName">
+          </div>
+
+          <!-- Status Field -->
+          <div class="form-group col-sm-2">
+            <label for="Status">Status</label>
+          </div>
+          <div class="form-group col-sm-2">
+            <select class="form-control" id="Status" name="Status" (change)="onSelected($event)" [(ngModel)]="selectedValue" formControlName="selectedValue">
+              <option value="null">All</option>
+              <option value="true">Active</option>
+              <option value="false">Disabled</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-sm-12 text-right">
+            <button type="submit" class="btn btn-primary" style="margin-right: 30px;">
+              <i class="glyphicon glyphicon-search"></i> Search
+            </button>
+            <button type="button" class="btn btn-danger" (click)="clearForm()">
+              <i class="glyphicon glyphicon-remove"></i> Close
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Table displaying TestMasters -->
+<div class="container-fluid mt-4" *ngIf="hasSearched">
+  <div class="panel panel-default rounded border border-secondary">
+    <div class="panel-body p-3">
+      <table class="table" *ngIf="isTableVisible && apiResponse && apiResponse.length > 0; else noData">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Test Id</th>
+            <th>Test Code</th>
+            <th>Test Name</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Iterate over the response -->
+          <tr *ngFor="let item of apiResponse; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ item.TestId }}</td>
+            <td>{{ item.TestCode }}</td>
+            <td>{{ item.TestName }}</td>
+            <td>{{ item.isActive ? 'Active' : 'Inactive' }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="openFormEdit(item)">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button class="btn btn-danger" (click)="deleteForm(item.TestId)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Fallback template if no data exists -->
+<ng-template #noData>
+  <div class="alert alert-warning" *ngIf="hasSearched">
+    No data found
+  </div>
+</ng-template>
+
+<!-- Popup Modal -->
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Close</button>
+  </div>
+</div>
+
+<!-- Dynamically render the form -->
+<div *ngIf="isFormVisible">
+  <app-test-edit (closeFormEvent)="closeFormEdit()" #testMasterEditComponent></app-test-edit>
+</div>

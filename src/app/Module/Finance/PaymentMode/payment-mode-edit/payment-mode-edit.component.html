@@ -1,0 +1,100 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Payment Mode Form Modal (Add/Edit) -->
+<div class="popup" *ngIf="isFormVisible">
+    <div class="popup-content p-4">
+      <span class="close" (click)="closeForm()">&times;</span>
+      <h2 class="text-center">{{ isEditMode ? 'Edit Payment Mode' : 'Add Payment Mode' }}</h2>
+      <hr />
+      <form [formGroup]="paymentModeForm" (ngSubmit)="isEditMode ? onSubmit() : onAddSubmit()">
+        
+        <!-- Payment Mode ID (Readonly in Edit Mode) -->
+        <div class="row mb-3 align-items-center">
+          <label for="paymentModeId" class="col-md-4 col-form-label text-md-right">Payment Mode ID</label>
+          <div class="col-md-8">
+            <input
+              formControlName="PaymentModeId"
+              type="number"
+              id="paymentModeId"
+              class="form-control"
+              placeholder="Payment Mode ID"
+              [readonly]="isEditMode"
+            />
+          </div>
+        </div>
+        
+        <!-- Payment Mode Name -->
+        <div class="row mb-3 align-items-center">
+          <label for="paymentModeName" class="col-md-4 col-form-label text-md-right">Payment Mode Name</label>
+          <div class="col-md-8">
+            <input
+              formControlName="PaymentModeName"
+              type="text"
+              id="paymentModeName"
+              class="form-control"
+              placeholder="Payment Mode Name"
+              required
+            />
+            <div *ngIf="paymentModeForm.get('PaymentModeName')?.invalid && paymentModeForm.get('PaymentModeName')?.touched" class="text-danger">
+              <small *ngIf="paymentModeForm.get('PaymentModeName')?.hasError('required')">Payment Mode Name is required.</small>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Is Cash (Switch Toggle Button) -->
+        <div class="row mb-3 align-items-center">
+          <label class="col-md-4 col-form-label text-md-right">Is Cash?</label>
+          <div class="col-md-8 d-flex align-items-center justify-content-start">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="isCash" formControlName="isCash" />
+            </div>
+          </div>
+        </div>
+  
+        <!-- Is Cheque (Switch Toggle Button) -->
+        <div class="row mb-3 align-items-center">
+          <label class="col-md-4 col-form-label text-md-right">Is Cheque?</label>
+          <div class="col-md-8 d-flex align-items-center justify-content-start">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="isCheque" formControlName="isCheque" />
+            </div>
+          </div>
+        </div>
+  
+        <!-- Is Online Payment (Switch Toggle Button) -->
+        <div class="row mb-3 align-items-center">
+          <label class="col-md-4 col-form-label text-md-right">Is Online Payment?</label>
+          <div class="col-md-8 d-flex align-items-center justify-content-start">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="isOnlinePayment" formControlName="isOnlinePayment" />
+            </div>
+          </div>
+        </div>
+  
+        <!-- Submit & Close Buttons -->
+        <div class="row">
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary btn-md mx-2" [disabled]="paymentModeForm.invalid">
+              <i class="fa fa-check"></i> {{ isEditMode ? 'Update' : 'Add' }}
+            </button>
+            <button type="button" class="btn btn-warning btn-md mx-2" (click)="closeForm()">
+              <i class="fa fa-close"></i> Close
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Popup Modal (Success/Error) -->
+  <div *ngIf="showPopup" class="popup">
+    <div class="popup-content text-center">
+      <p>{{ popupMessage }}</p>
+      <button class="btn btn-primary" (click)="closePopup()">Close</button>
+    </div>
+  </div>
+  

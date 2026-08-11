@@ -1,0 +1,28 @@
+.error-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 77, 77, 0.95); /* Slight transparency */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px; /* More rounded corners */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.4;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out, fadeOut 0.3s ease-in-out 4.7s;
+    max-width: 300px; /* Prevents overflow */
+    word-wrap: break-word;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(10px); }
+}

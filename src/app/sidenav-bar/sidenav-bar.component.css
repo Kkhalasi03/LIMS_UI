@@ -1,0 +1,86 @@
+/* Body */
+body {
+  font-family: "Lato", sans-serif;
+}
+
+/* Sidenav Styles */
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  background-image: url('./pexels-abhishek-dahiya-412104015-15232973.jpg'); /* Background Image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow-x: hidden;
+  transition: 0.5s;  /* Smooth transition for sliding */
+  padding-top: 60px;
+}
+
+/* Links in Sidenav */
+.sidenav a, .dropdown-btn {
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: white;
+  display: block;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Hover Effect for Links */
+.sidenav a:hover, .dropdown-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Transparent hover effect */
+}
+
+/* Close Button */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Main Content Transition */
+#main {
+  transition: margin-left 0.5s;
+  padding: 16px;
+}
+
+/* Dropdown Menu */
+.dropdown-content {
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.8); /* Slight transparency for readability */
+  padding-left: 20px;
+}
+
+.dropdown-content a {
+  padding: 8px;
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Show class for dropdown */
+.show {
+  display: flex;
+}
+
+/* Media Queries for Responsiveness */
+@media screen and (max-height: 450px) {
+  .sidenav { padding-top: 15px; }
+  .sidenav a { font-size: 18px; }
+}

@@ -1,0 +1,54 @@
+<!-- Sidebar -->
+<div id="mySidenav" class="sidenav" [style.width]="sidenavWidth">
+  <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Search Menu..." class="form-control" />
+  </div>
+
+  <!-- Master Section (Only visible if it has items) -->
+  <div *ngIf="filteredMasterMenu.length > 0" class="dropdown">
+    <button class="dropdown-btn" (click)="toggleSection('master')">Master</button>
+    <div class="dropdown-content" [ngClass]="{ 'show': activeSection === 'master' }">
+      <a *ngFor="let item of filteredMasterMenu" [routerLink]="item.route" routerLinkActive="active" (click)="closeNav()">
+        {{ item.name }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Transaction Section (Only visible if it has items) -->
+  <div *ngIf="filteredTransactionMenu.length > 0" class="dropdown">
+    <button class="dropdown-btn" (click)="toggleSection('transaction')">Transaction</button>
+    <div class="dropdown-content" [ngClass]="{ 'show': activeSection === 'transaction' }">
+      <a *ngFor="let item of filteredTransactionMenu" [routerLink]="item.route" routerLinkActive="active" (click)="closeNav()">
+        {{ item.name }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Finance Section (Only visible if it has items) -->
+  <div *ngIf="filteredFinanceMenu.length > 0" class="dropdown">
+    <button class="dropdown-btn" (click)="toggleSection('finance')">Finance</button>
+    <div class="dropdown-content" [ngClass]="{ 'show': activeSection === 'finance' }">
+      <a *ngFor="let item of filteredFinanceMenu" [routerLink]="item.route" routerLinkActive="active" (click)="closeNav()">
+        {{ item.name }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Account Section (Only visible if it has items) -->
+  <div *ngIf="filteredAccountMenu.length > 0" class="dropdown">
+    <button class="dropdown-btn" (click)="toggleSection('account')">Account</button>
+    <div class="dropdown-content" [ngClass]="{ 'show': activeSection === 'account' }">
+      <a *ngFor="let item of filteredAccountMenu" [routerLink]="item.route" routerLinkActive="active" (click)="closeNav()">
+        {{ item.name }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content (Sidebar Toggle Button) -->
+<div id="main">
+  <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776;</span>
+</div>
